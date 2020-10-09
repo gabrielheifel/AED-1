@@ -10,11 +10,11 @@ typedef struct nomes {
 }Nomes;
 
 
-void *create_string() {
+Nomes* create_string() {
    Nomes *inicio;
 
-   inicio = (Nomes*) malloc (sizeof(Nomes));
-   inicio -> prox = NULL;
+   inicio = (Nomes*)malloc(sizeof(Nomes));
+   inicio->prox = NULL;
 
    printf("string criada\n");
    return inicio;
@@ -39,6 +39,8 @@ void add(Nomes *p) {
 
    novoNome->prox = p->prox;
    p->prox = novoNome;
+
+   // free(novoNome);
 }
 
 void delete(Nomes *p) {
@@ -46,8 +48,10 @@ void delete(Nomes *p) {
 
    Nomes *remove, *anterior;
    char *quit;
+   // int *flag;
 
    quit = (char*) malloc (20*sizeof(char));
+   // flag = (int*) malloc (sizeof(int));
 
    printf("Nome a excluir: ");
    getchar();
@@ -55,6 +59,7 @@ void delete(Nomes *p) {
 
    remove = p;
    anterior = p->prox;
+   // flag = 0;
 
    while((remove!=NULL)&&(strcmp(anterior->name, quit)!=0)){
       remove = anterior;
@@ -64,13 +69,28 @@ void delete(Nomes *p) {
    if(anterior != NULL){
       remove->prox = anterior->prox;
       free(anterior);
+      printf("Nome deletado\n");
+   }
+}
+
+void list(Nomes *p) {
+   Nomes *x;
+
+   if(p == NULL){
+      printf("Vazio\n");
+      return;
    }
 
-   printf("Nome deletado");
+   for(x=p->prox; x!=NULL; x=x->prox){
+      printf("Nome: ", x->name);
+      printf("\n");
+   }
 }
 
 int menu(Nomes *p) {
-   int opcao;
+   int *opcao;
+
+   opcao = (int*)malloc(sizeof(int));
 
    for( ; ; ){
       printf("\n");
@@ -80,16 +100,18 @@ int menu(Nomes *p) {
       printf("4) Sair\n");
       printf("Opcao: ");
 
-      scanf("%d", &opcao);
+      scanf("%d", opcao);
    
-      switch (opcao) {
+      switch (*opcao) {
          case 1: add(p); break;
          case 2: delete(p); break;
-         case 3: /*list(p);*/ break;
+         case 3: list(p); break;
          case 4: exit(1);
          default: printf("Apenas numeros entre 1 - 4."); break;
-      }   
+      }
    }
+
+   free(opcao);
 }
 
 int main() {
