@@ -6,6 +6,7 @@
 
 typedef struct nomes {
    char *name;
+   int id;
    struct nomes *prox;
 }Nomes;
 
@@ -39,6 +40,7 @@ void add(Nomes *p) {
 
    novoNome->prox = p->prox;
    p->prox = novoNome;
+   novoNome->id+=1;
 
    // free(novoNome);
 }
@@ -48,10 +50,9 @@ void delete(Nomes *p) {
 
    Nomes *remove, *anterior;
    char *quit;
-   // int *flag;
+   int i = 0;
 
    quit = (char*) malloc (20*sizeof(char));
-   // flag = (int*) malloc (sizeof(int));
 
    printf("Nome a excluir: ");
    getchar();
@@ -59,31 +60,33 @@ void delete(Nomes *p) {
 
    remove = p;
    anterior = p->prox;
-   // flag = 0;
 
-   while((remove!=NULL)&&(strcmp(anterior->name, quit)!=0)){
+   while((strcmp(anterior->name, quit)!=0)&&(i<anterior->id)){
       remove = anterior;
       anterior = anterior->prox;
+      i++;
    }
 
-   if(anterior != NULL){
-      remove->prox = anterior->prox;
-      free(anterior);
-      printf("Nome deletado\n");
+   if(i == anterior->id){
+      printf("Nome não exite no bd\n");
    }
+   else{
+
+      if(anterior != NULL){
+         remove->prox = anterior->prox;
+         free(anterior);
+         printf("Nome deletado\n");
+      }
+   }
+
+   free(quit);
 }
 
 void list(Nomes *p) {
    Nomes *x;
 
-   if(p == NULL){
-      printf("Vazio\n");
-      return;
-   }
-
    for(x=p->prox; x!=NULL; x=x->prox){
-      printf("Nome: ", x->name);
-      printf("\n");
+      printf("Nome: %s", x->name);
    }
 }
 
