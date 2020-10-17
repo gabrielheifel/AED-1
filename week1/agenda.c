@@ -51,7 +51,9 @@ void menu() {
 
       switch(var->op) {
          case 1: addContato(); break;
-         case 4: /*list();*/ exit(1);
+         // case 2: delete(); break;
+         // case 3: list(); break;
+         case 4: exit(1);
          default: printf("Apenas 1 ou 4\n"); break;
       }
    }
