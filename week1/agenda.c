@@ -43,8 +43,8 @@ void menu() {
 
    for( ; ; ){
       printf("1) Adicionar contato\n");
-      printf("2) Apagar contato\n");
-      printf("3) Listar\n");
+      // printf("2) Apagar contato\n");
+      // printf("3) Listar\n");
       printf("4) Sair\n");
       printf("Opcao: ");
       scanf("%d", &var->op);
