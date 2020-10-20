@@ -73,7 +73,7 @@ void delete() {
       //diminui o tamanho do buffer
       var->cont-=1;
       var->tambuffer = (sizeof(Variaveis)) + (var->cont * sizeof(Contato));
-      pContato == pBuffer + (var->tambuffer - sizeof(Contato));
+      pContato = pBuffer + (var->tambuffer - sizeof(Contato));
 
       printf("Contato removido!\n");
    }
