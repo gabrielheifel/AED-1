@@ -1,0 +1,27 @@
+Dr. Memory version 2.3.0 build 1 built on Feb  6 2020 01:44:52
+Dr. Memory results for pid 24231: "pessoas"
+Recorded 17 suppression(s) from default /home/heifel/Downloads/DrMemory-Linux-2.3.0-1/bin64/suppress-default.txt
+
+Error #1: UNINITIALIZED READ: reading register eax
+# 0 main               [/home/heifel/Documentos/AED/AED-1/week2/pessoas.c:70]
+Note: @0:00:00.756 in thread 24231
+Note: instruction: cmp    %eax $0x00000004
+
+===========================================================================
+FINAL SUMMARY:
+
+DUPLICATE ERROR COUNTS:
+
+SUPPRESSIONS USED:
+
+ERRORS FOUND:
+      0 unique,     0 total unaddressable access(es)
+      1 unique,     1 total uninitialized access(es)
+      0 unique,     0 total invalid heap argument(s)
+      0 unique,     0 total warning(s)
+      0 unique,     0 total,      0 byte(s) of leak(s)
+      0 unique,     0 total,      0 byte(s) of possible leak(s)
+ERRORS IGNORED:
+     15 unique,    18 total,   8778 byte(s) of still-reachable allocation(s)
+         (re-run with "-show_reachable" for details)
+Details: /home/heifel/Downloads/DrMemory-Linux-2.3.0-1/drmemory/logs/DrMemory-pessoas.24231.000/results.txt

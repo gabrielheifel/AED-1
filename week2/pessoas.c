@@ -9,55 +9,79 @@ typedef struct {
 }Pessoa;
 
 typedef struct {
-   int op, id, tambuffer;
-   Pessoa *p;
+   int cont, tambuffer;
+   Pessoa *p;      //ponteiro para pessoa
 }Variaveis;
 
+// Declaração dos ponteiros
 void *pBuffer;
-Pessoa *person;
+Pessoa *pPessoa;
 Variaveis *var;
 
 void addPessoa() {
-   Pessoa *newperson;   //nova pessoa
 
-   var->id += 1;        //contador 
-   var->tambuffer = (sizeof(Variaveis)) + (var->id*sizeof(Pessoa));
-   pBuffer = realloc(pBuffer, var->tambuffer);
+   var->cont += 1;        //contador para ver quantos pessoa adicionados
+   //Novo tambuffer com o numero de pessoa adicionados
+   var->tambuffer = (sizeof(Variaveis)) + (var->cont*sizeof(Pessoa)); 
+   pBuffer = realloc(pBuffer, var->tambuffer);     //realoca o novo tamanho
    if(pBuffer==NULL){
       printf("Memoria insuficiente!\n");
       exit(1);
    }
-
-   newperson = pBuffer + (var->tambuffer - sizeof(Pessoa));
-
+   var = pBuffer;          //variaveis aponta para o Buffer 
+   //contato recebe nova posiçao de memoria do buffer + tamanho - 1 contato q vai ser adicionado
+   pPessoa = pBuffer + (var->tambuffer - sizeof(Pessoa));    
+   
+   getchar();
+   printf("==== Nova Pessoa ====\n");
    printf("Nome: ");
-   fgets(newperson->nome, 30, stdin);
+   fgets(pPessoa->nome, 30, stdin);
    printf("Idade: ");
-   scanf("%d", &newperson->idade);
+   scanf("%d", &pPessoa->idade);
    printf("Altura: ");
-   scanf("%d", &newperson->altura);
+   scanf("%d", &pPessoa->altura);   
+
+   printf("Feito!\n");
+}
+
+void list() {
+   printf("==== Listar pessoas ====\n");
+   pPessoa = pBuffer + (sizeof(Variaveis));
+
+   for(int i = 0; i < var->cont; i++){
+      printf("=== Pessoa %d ===\n", i);
+      printf("Nome: %s", pPessoa[i].nome);
+      printf("Idade: %d\n", pPessoa[i].idade);
+      printf("Altura: %d\n", pPessoa[i].altura);
+   }
 }
 
 int main() {
    
-   pBuffer = (Variaveis*) malloc(sizeof(Variaveis));
+   pBuffer = malloc(sizeof(Variaveis));
    if(pBuffer==NULL){
       printf("Falta de memoria\n");
       exit(1);
    }
    var = pBuffer;
-   var->id = 0;
+   var->cont = 0;
+   int op;
 
-   for( ; ; ){
-      printf("1) Adicionar pessoa\n4) Sair\nOpcao: ");
-      scanf("%d", &var->op);
+   while(op!=4){
+      printf("\nDigite:\n");
+      printf("1) Adicionar pessoa\n");
+      printf("4) Sair\n");
+      printf("Opcao: ");
+      scanf("%d", &op);
 
-      switch(var->op) {
-         case 1: addPessoa(); break;
-         case 4: /*list();*/ exit(1);
-         default: printf("Apenas 1 ou 4\n"); break;
+      if(op==1){
+         addPessoa();
+      }else{
+         break;
       }
    }
 
+   list();
+   printf("\n");
    free(pBuffer);
 }
