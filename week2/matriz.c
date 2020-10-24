@@ -29,7 +29,7 @@
 
 int** criaMatriz(int *m, int *n, int *flag) {
    int **mat, op, i;
-
+   
    if(*flag==1) printf("\n\t=== Matriz ja foi criada! ===");
    printf("\n\tSelecione:\n");
    printf("\t1)Criar matriz\n");
@@ -39,7 +39,7 @@ int** criaMatriz(int *m, int *n, int *flag) {
 
    if(op==1){
       if(*flag==1){
-         printf("\tMatriz ja foi criada, tente redimenciona-la!\n");
+         printf("\n\tMatriz ja foi criada, tente redimenciona-la!\n");
       }else{
          //alocando linhas
          mat = (int **) malloc ((*m) * sizeof(int *));
@@ -57,33 +57,43 @@ int** criaMatriz(int *m, int *n, int *flag) {
          }
          printf("\tMatriz criada!\n");
          *flag = 1;
-         return mat;
       }
    }
    if(op==2){
+      int aux = *m;     //aux para dar malloc em novos vetores
       //verifica se a matriz ja foi alocada
       if(*flag==1){
          printf("\tInformar novo numero de linhas: ");
          scanf("%d", &(*m));
          printf("\tInformar novo numero de colunas: ");
          scanf("%d", &(*n));
+         //realoca vetor de vetores
          mat = (int **) realloc(mat, (*m) * sizeof(int *));
          if(mat==NULL){
             printf("MEMORIA INSUFICIENTE\n");
             exit(1);
          }
          for(i=0; i<(*m); i++){
-            mat[i] = (int *) realloc(mat[i], (*n) * sizeof(int));
-            if(mat[i]==NULL){
-               printf("MEMORIA INSUFICIENTE\n");
-               exit(1);
+            if(i<=aux){    //se o vetor da linha i já foi alocado
+               mat[i] = (int *) realloc(mat[i], (*n) * sizeof(int));
+               if(mat[i]==NULL){
+                  printf("MEMORIA INSUFICIENTE\n");
+                  exit(1);
+               }
+            }else{         //se o vetor da linha i ainda n foi alocado
+               mat[i] = (int *) malloc((*n) * sizeof(int));
+               if(mat[i]==NULL){
+                  printf("MEMORIA INSUFICIENTE\n");
+                  exit(1);
+               }
             }
          }
-         return mat;
+         printf("\n\tMatriz redimencionada!\n");
       }else{
-         printf("\tMatriz ainda nao foi criada! Crie primeiro.\n");
+         printf("\n\tMatriz ainda nao foi criada! Crie primeiro.\n");
       }
    }
+   return mat;
 }
 
 void leiaMatriz(int **mat, int m, int n) {
@@ -93,7 +103,7 @@ void leiaMatriz(int **mat, int m, int n) {
          mat[i][j] = rand()%25;
       }
    }
-   printf("\tMatriz preenchida!\n");
+   printf("\tMatriz preenchida com numeros aleatorios\n");
 }
 
 void imprimeMatriz(int **mat, int m, int n) {
@@ -108,7 +118,8 @@ void imprimeMatriz(int **mat, int m, int n) {
    }
 }
 
-int somaMatriz(int **mat, int m, int n) {
+// mudei a funcao para void porque nao seria necessario ter um return
+void somaMatriz(int **mat, int m, int n) {
    int i, j, soma=0;
    for(i=0; i<m; i++){
       for(j=0; j<n; j++){
@@ -118,8 +129,8 @@ int somaMatriz(int **mat, int m, int n) {
    printf("\n\tValores da matriz somados = %d\n", soma);
 }
 
-int* colunaMatriz(int **mat, int m, int n, int ncoluna) {
-   int *vet, i, j;
+int* colunaMatriz(int **mat, int m, int n) {
+   int *vet, i, ncoluna;
 
    printf("\n\tInforme o numero da coluna: ");
    scanf("%d", &ncoluna);
@@ -144,7 +155,14 @@ void imprimeVetor(int *vet, int m) {
    printf("\n");
 }
 
-// void liberaMatriz(int **mat, int ncoluna){}
+// libera matriz precisa das linhas ao invez das colunas
+void liberaMatriz(int **mat, int m){
+   int i;
+   for(i=m-1; i>=0; i--){
+      free(mat[i]);
+   }
+   free(mat);
+}
 
 int menu() {
    int op;
@@ -164,7 +182,7 @@ int menu() {
 
 int main() {
    // flag para ver se a matriz já foi alocada
-   int m, n, op, flag, ncoluna, **mat, *vet;
+   int m, n, op, flag, **mat, *vet;
 
    printf("Informar numero de linhas: ");
    scanf("%d", &m);
@@ -177,14 +195,13 @@ int main() {
             case 1: mat = criaMatriz(&m, &n, &flag); break;
             case 2: leiaMatriz(mat, m, n); break;
             case 3: somaMatriz(mat, m, n); break;
-            case 4: vet = colunaMatriz(mat, m, n, ncoluna); imprimeVetor(vet, m); break;
+            case 4: vet = colunaMatriz(mat, m, n); imprimeVetor(vet, m); break;
             case 5: imprimeMatriz(mat, m, n); break;
             default: break;
       }
    }while(op!=6);
 
-   // liberaMatriz(mat, ncoluna);
+   liberaMatriz(mat, m);
 
    free(vet);
-   free(mat);
 }

@@ -1,39 +1,35 @@
 Dr. Memory version 2.3.0 build 1 built on Feb  6 2020 01:44:52
-Dr. Memory results for pid 27794: "matriz"
+Dr. Memory results for pid 11635: "matriz"
 Recorded 17 suppression(s) from default /home/heifel/Downloads/DrMemory-Linux-2.3.0-1/bin64/suppress-default.txt
 
+WARNING: application is missing line number information.
+
 Error #1: UNINITIALIZED READ: reading register eax
-# 0 criaMatriz               [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:33]
-# 1 main                     [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:178]
-Note: @0:00:04.699 in thread 27794
+# 0 criaMatriz
+# 1 main  
+Note: @0:00:03.996 in thread 11635
 Note: instruction: cmp    %eax $0x00000001
 
 Error #2: UNINITIALIZED READ: reading register eax
-# 0 criaMatriz               [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:42]
-# 1 main                     [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:178]
-Note: @0:00:21.120 in thread 27794
+# 0 criaMatriz
+# 1 main  
+Note: @0:00:06.121 in thread 11635
 Note: instruction: cmp    %eax $0x00000001
 
-Error #3: LEAK 24 direct bytes 0x00007fecc9f75860-0x00007fecc9f75878 + 36 indirect bytes
+Error #3: LEAK 24 direct bytes 0x00007f022fcd4860-0x00007f022fcd4878 + 36 indirect bytes
 # 0 replace_malloc               [/drmemory_package/common/alloc_replace.c:2577]
-# 1 criaMatriz                   [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:46]
-# 2 main                         [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:178]
+# 1 criaMatriz
+# 2 main  
 
-Error #4: LEAK 12 direct bytes 0x00007fecc9f75930-0x00007fecc9f7593c + 0 indirect bytes
+Error #4: LEAK 12 direct bytes 0x00007f022fcd4930-0x00007f022fcd493c + 0 indirect bytes
 # 0 replace_malloc               [/drmemory_package/common/alloc_replace.c:2577]
-# 1 colunaMatriz                 [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:128]
-# 2 main                         [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:181]
-
-Error #5: LEAK 12 direct bytes 0x00007fecc9f759b0-0x00007fecc9f759bc + 0 indirect bytes
-# 0 replace_realloc               [/drmemory_package/common/alloc_replace.c:2669]
-# 1 criaMatriz                    [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:77]
-# 2 main                          [/home/heifel/Documentos/AED/AED-1/week2/matriz.c:178]
+# 1 colunaMatriz
+# 2 main  
 
 ===========================================================================
 FINAL SUMMARY:
 
 DUPLICATE ERROR COUNTS:
-	Error #   5:      5
 
 SUPPRESSIONS USED:
 
@@ -42,9 +38,9 @@ ERRORS FOUND:
       2 unique,     2 total uninitialized access(es)
       0 unique,     0 total invalid heap argument(s)
       0 unique,     0 total warning(s)
-      3 unique,     7 total,    132 byte(s) of leak(s)
+      2 unique,     2 total,     72 byte(s) of leak(s)
       0 unique,     0 total,      0 byte(s) of possible leak(s)
 ERRORS IGNORED:
      15 unique,    18 total,   8778 byte(s) of still-reachable allocation(s)
          (re-run with "-show_reachable" for details)
-Details: /home/heifel/Downloads/DrMemory-Linux-2.3.0-1/drmemory/logs/DrMemory-matriz.27794.000/results.txt
+Details: /home/heifel/Downloads/DrMemory-Linux-2.3.0-1/drmemory/logs/DrMemory-matriz.11635.000/results.txt
