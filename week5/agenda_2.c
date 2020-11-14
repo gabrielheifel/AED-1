@@ -9,15 +9,26 @@ typedef struct contatos {
 }Contato;
 
 typedef struct variaveis {
-   int op, cont, tambuffer, i, j;
+   int op, cont, tambuffer, i, j, index;
    char auxNome[30], auxTel[30];
    Contato *quit;      //ponteiro para contato
 }Variaveis;
+
+typedef struct nodo {
+   Contato *info;
+   struct nodo *pNext;
+}Nodo;
+
+typedef struct fila {
+   Nodo *pFirst;
+   Nodo *pLast;
+}Fila;
 
 // Declaração dos ponteiros globais
 void *pBuffer;
 Contato *pContato;
 Variaveis *var;
+Fila *pFila;
 
 void addDefault() {
 
@@ -125,7 +136,75 @@ void list() {
    }
 }
 
-void insertionSort(int formaOrd) {     //formaOrd == 1 ? alfabetica : numerica
+Fila *RESET() {
+   Fila *pFila;
+
+   pFila = (Fila*) malloc (sizeof(Fila));
+
+   pFila->pFirst = NULL;
+   pFila->pLast = NULL;
+
+   return pFila;
+}
+
+void PUSH(Contato *pContato) {
+   Nodo *pNovo;
+
+   pNovo = (Nodo*) malloc (sizeof(Nodo));
+   if(pNovo == NULL){
+      printf("Erro memoria PUSH");
+      return;
+   }
+   pNovo->info = pContato;
+   pNovo->pNext = NULL;
+
+   if(pFila->pLast != NULL)
+      pFila->pLast->pNext = pNovo;
+   else
+      pFila->pFirst = pNovo;
+   
+   pFila->pLast = pNovo;
+}
+
+int POP(Contato *pContato) {
+   Nodo *pNodo;
+
+   if(pFila->pFirst == NULL){
+      printf("Fila Vazia! POP\n");
+      return 0;
+   }
+   else{
+      pNodo = pFila->pFirst;
+      pContato = pFila->pFirst->info;
+      pFila->pFirst = pFila->pFirst->pNext;
+   }
+
+   if(pFila->pFirst == NULL)
+      pFila->pLast = NULL;
+   
+   free(pNodo);
+   return 1;
+}
+
+void imprimeFila() {
+   Nodo *pNodo;
+
+   if(pFila->pFirst == NULL){
+      printf("Fila Vazia Imprime\n");
+      return;
+   }
+   else{
+      printf("==== Listar contatos ordenados ====\n");
+      var->i=0;
+      for(pNodo = pFila->pFirst; pNodo != NULL; pNodo = pNodo->pNext, (var->i)++){
+         printf("=== Contato %d ===\n", var->i);
+         printf("Nome: %s", pNodo->info->nome);
+         printf("Telefone: %s\n", pNodo->info->tel);
+      }
+   }
+}
+
+void ordenar(int formaOrd) {     //formaOrd == 1 ? alfabetica : numerica
    pContato = pBuffer + (sizeof(Variaveis));  //Contato aponta para o buffer
 
    for(var->j=1; var->j<var->cont; (var->j)++){
@@ -135,11 +214,10 @@ void insertionSort(int formaOrd) {     //formaOrd == 1 ? alfabetica : numerica
 
       if(formaOrd == 1){
          //strcmp < 0 == string1 menor que string2
-         while((var->i>=0) && ((strcmp(var->auxNome,pContato[var->i].nome)) <0)){
-            strcpy(pContato[var->i+1].nome, pContato[var->i].nome);
-            strcpy(pContato[var->i+1].tel, pContato[var->i].tel);
-
-            (var->i)--;
+         for(var->i=0; var->i<=var->cont; (var->i)++){
+            if((strcmp(var->auxNome, pContato[var->i].nome)) > 0){
+               strcpy(var->auxNome, pContato[var->i].nome);
+            }
          }
       }else{
          while((var->i>=0) && ((strcmp(var->auxTel,pContato[var->i].tel)) <0)){
@@ -149,10 +227,17 @@ void insertionSort(int formaOrd) {     //formaOrd == 1 ? alfabetica : numerica
             (var->i)--;
          }
       }
-
-      strcpy(pContato[var->i+1].nome, var->auxNome);
-      strcpy(pContato[var->i+1].tel, var->auxTel);
+      PUSH(pContato+var->j);
    }
+}
+
+void Clear() {
+   while(pFila->pFirst!=NULL){
+      Nodo *auxDel = pFila->pFirst;
+      pFila->pFirst = pFila->pFirst->pNext;
+      free(auxDel);
+   }
+   free(pFila);
 }
 
 void menu() {
@@ -165,6 +250,7 @@ void menu() {
       printf("4) Sair\n");
       printf("5) Ordenar ordem alfabetica\n");
       printf("6) Ordenar ordem numerica\n");
+      printf("7) Imprime fila ordenada\n");
       printf("Opcao: ");
       scanf("%d", &var->op);
 
@@ -174,6 +260,7 @@ void menu() {
          case 3: list(); break;
          case 5: insertionSort(1); break;
          case 6: insertionSort(2); break;
+         case 7: imprimeFila();
          default: break;
       }
    }
@@ -188,10 +275,12 @@ int main() {
    }
    var = pBuffer;
    var->cont = 0;
+   pFila = RESET();
 
    nomesDefault();
 
    menu();
 
+   Clear();
    free(pBuffer);
 }
