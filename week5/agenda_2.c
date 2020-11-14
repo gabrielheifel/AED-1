@@ -207,28 +207,28 @@ void imprimeFila() {
 void ordenar(int formaOrd) {     //formaOrd == 1 ? alfabetica : numerica
    pContato = pBuffer + (sizeof(Variaveis));  //Contato aponta para o buffer
 
-   for(var->j=1; var->j<var->cont; (var->j)++){
-      var->i = var->j-1;
-      strcpy(var->auxNome, pContato[var->j].nome);
-      strcpy(var->auxTel, pContato[var->j].tel);
+   var->i = 0;
+   if(formaOrd == 1){
+      strcpy(var->auxNome, pContato[var->i].nome);
 
-      if(formaOrd == 1){
-         //strcmp < 0 == string1 menor que string2
-         for(var->i=0; var->i<=var->cont; (var->i)++){
-            if((strcmp(var->auxNome, pContato[var->i].nome)) > 0){
-               strcpy(var->auxNome, pContato[var->i].nome);
-            }
-         }
-      }else{
-         while((var->i>=0) && ((strcmp(var->auxTel,pContato[var->i].tel)) <0)){
-            strcpy(pContato[var->i+1].nome, pContato[var->i].nome);
-            strcpy(pContato[var->i+1].tel, pContato[var->i].tel);
-
-            (var->i)--;
+      //strcmp < 0 == string1 menor que string2
+      for(var->i=0; var->i<=var->cont; (var->i)++){
+         if((strcmp(var->auxNome, pContato[var->i].nome)) > 0){
+            strcpy(var->auxNome, pContato[var->i].nome);
+            var->index = var->i;    // index encontra a posição do menor valor
          }
       }
-      PUSH(pContato+var->j);
+   }else{
+      strcpy(var->auxTel, pContato[var->i].tel);
+
+      for(var->i=0; var->i<=var->cont; (var->i)++){
+         if((strcmp(var->auxTel, pContato[var->i].tel)) > 0){
+            strcpy(var->auxTel, pContato[var->i].tel);
+            var->index = var->i;
+         }
+      }
    }
+   PUSH(pContato+var->index);
 }
 
 void Clear() {
@@ -258,8 +258,8 @@ void menu() {
          case 1: addContato(); break;
          case 2: deletar(); break;
          case 3: list(); break;
-         case 5: insertionSort(1); break;
-         case 6: insertionSort(2); break;
+         case 5: ordenar(1); break;
+         case 6: ordenar(2); break;
          case 7: imprimeFila();
          default: break;
       }
