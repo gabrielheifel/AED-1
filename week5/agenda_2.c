@@ -9,7 +9,7 @@ typedef struct contatos {
 }Contato;
 
 typedef struct variaveis {
-   int op, cont, tambuffer, i, j, index;
+   int op, cont, tambuffer, i, j, auxOrd;
    char auxNome[30], auxTel[30];
    Contato *quit;      //ponteiro para contato
 }Variaveis;
@@ -32,6 +32,7 @@ Fila *pFila;
 
 void addDefault() {
 
+   // ADD NO BUFFER
    var->cont += 1;        //contador para ver quantos contatos adicionados
    //Novo tambuffer com o numero dos contatos adicionados
    var->tambuffer = (sizeof(Variaveis)) + (var->cont*sizeof(Contato)); 
@@ -42,7 +43,7 @@ void addDefault() {
    }
    var = pBuffer;          //variaveis aponta para o Buffer 
    //contato recebe nova posiçao de memoria do buffer + tamanho - 1 contato q vai ser adicionado
-   pContato = pBuffer + (var->tambuffer - sizeof(Contato));    
+   pContato = pBuffer + (var->tambuffer - sizeof(Contato));
 }
 
 void nomesDefault() {
@@ -60,7 +61,7 @@ void nomesDefault() {
 
    addDefault();
    strcpy(pContato->nome, "Ana\n");
-   strcpy(pContato->tel, "444444\n");
+   strcpy(pContato->tel, "555555\n");
 }
 
 void addContato() {
@@ -136,6 +137,34 @@ void list() {
    }
 }
 
+// MATRIZ
+char** criaMatriz() {
+   char **matriz;
+   //vetor de string salva as informaçoes para ordena-las
+   matriz = (char**)malloc(sizeof(char*)*var->cont);
+   if(matriz==NULL){
+      printf("memoria insuficiente\n");
+      exit(1);
+   }
+   for(var->i=0; var->i<var->cont; (var->i)++){
+      matriz[var->i] = (char*)malloc(sizeof(char)*20);
+      if(matriz[var->i]==NULL){
+         printf("memoria insuficiente\n");
+         exit(1);
+      }
+   }
+
+   return matriz;
+}
+
+void liberaMatriz(char **matriz){
+   for(var->i=var->cont-1; var->i>=0; (var->i)--){
+      free(matriz[var->i]);
+   }
+   free(matriz);
+}
+
+// FILA
 Fila *RESET() {
    Fila *pFila;
 
@@ -145,6 +174,15 @@ Fila *RESET() {
    pFila->pLast = NULL;
 
    return pFila;
+}
+
+void CLEAR() {
+   while(pFila->pFirst!=NULL){
+      Nodo *auxDel = pFila->pFirst;
+      pFila->pFirst = pFila->pFirst->pNext;
+      free(auxDel);
+   }
+   free(pFila);
 }
 
 void PUSH(Contato *pContato) {
@@ -166,31 +204,11 @@ void PUSH(Contato *pContato) {
    pFila->pLast = pNovo;
 }
 
-int POP(Contato *pContato) {
-   Nodo *pNodo;
-
-   if(pFila->pFirst == NULL){
-      printf("Fila Vazia! POP\n");
-      return 0;
-   }
-   else{
-      pNodo = pFila->pFirst;
-      pContato = pFila->pFirst->info;
-      pFila->pFirst = pFila->pFirst->pNext;
-   }
-
-   if(pFila->pFirst == NULL)
-      pFila->pLast = NULL;
-   
-   free(pNodo);
-   return 1;
-}
-
 void imprimeFila() {
    Nodo *pNodo;
 
    if(pFila->pFirst == NULL){
-      printf("Fila Vazia Imprime\n");
+      printf("Fila Vazia! Imprime\n");
       return;
    }
    else{
@@ -202,55 +220,77 @@ void imprimeFila() {
          printf("Telefone: %s\n", pNodo->info->tel);
       }
    }
+
+   CLEAR();             //apaga a fila
+   pFila = RESET();     //reinicia a fila
 }
 
 void ordenar(int formaOrd) {     //formaOrd == 1 ? alfabetica : numerica
    pContato = pBuffer + (sizeof(Variaveis));  //Contato aponta para o buffer
+   
+   char **matriz = criaMatriz();
 
-   var->i = 0;
-   if(formaOrd == 1){
-      strcpy(var->auxNome, pContato[var->i].nome);
+   // Index vetor para ordenar os endereços das posições do contatos
+   int *index = (int*)malloc(sizeof(int)*var->cont);
+   if(index==NULL){
+      printf("memoria insuficiente\n");
+      return;
+   }
+   // Seta index e matriz que será ordenada
+   for(var->i=0, var->j=0; var->i<var->cont; (var->i)++){
+      index[var->i]=var->i;
+      if(formaOrd==1){
+         strcpy(matriz[var->i], pContato[var->i].nome);
+      }else{
+         strcpy(matriz[var->i], pContato[var->i].tel);
+
+      }
+   }
+   
+   // Ordenaçao insertionSort
+   for(var->j=1; var->j<var->cont; (var->j)++){
+      var->i=var->j-1;
+      strcpy(var->auxNome, matriz[var->j]);
+      // index[var->i] = var->j;
 
       //strcmp < 0 == string1 menor que string2
-      for(var->i=0; var->i<=var->cont; (var->i)++){
-         if((strcmp(var->auxNome, pContato[var->i].nome)) > 0){
-            strcpy(var->auxNome, pContato[var->i].nome);
-            var->index = var->i;    // index encontra a posição do menor valor
-         }
-      }
-   }else{
-      strcpy(var->auxTel, pContato[var->i].tel);
+      while((var->i>=0) && ((strcmp(var->auxNome,matriz[var->i])) <0)){
+         strcpy(matriz[var->i+1], matriz[var->i]);
+         var->auxOrd = index[var->i+1];
+         index[var->i+1] = index[var->i];
+         index[var->i] = var->auxOrd;
 
-      for(var->i=0; var->i<=var->cont; (var->i)++){
-         if((strcmp(var->auxTel, pContato[var->i].tel)) > 0){
-            strcpy(var->auxTel, pContato[var->i].tel);
-            var->index = var->i;
-         }
+         (var->i)--;
       }
+      strcpy(matriz[var->i+1], var->auxNome);
    }
-   PUSH(pContato+var->index);
+
+   // Passa os endereços dos valores ordenados para a fila
+   for(var->i=0; var->i<var->cont; (var->i)++){
+      printf("%d, ", index[var->i]);
+      
+      pContato = (Contato*) pContato+(index[var->i]); // contato no endereço ordenado
+      PUSH(pContato);
+      pContato = pBuffer + (sizeof(Variaveis));       // contato volta a apoontar para o buffer
+   }
+   printf("\n");
+
+   free(index);
+   liberaMatriz(matriz);
 }
 
-void Clear() {
-   while(pFila->pFirst!=NULL){
-      Nodo *auxDel = pFila->pFirst;
-      pFila->pFirst = pFila->pFirst->pNext;
-      free(auxDel);
-   }
-   free(pFila);
-}
-
+// MAIN
 void menu() {
 
-   while(var->op!=4){
+   while(var->op!=9){
       printf("\nDigite:\n");
       printf("1) Adicionar contato\n");
       printf("2) Apagar contato\n");
       printf("3) Listar contatos\n");
-      printf("4) Sair\n");
-      printf("5) Ordenar ordem alfabetica\n");
-      printf("6) Ordenar ordem numerica\n");
-      printf("7) Imprime fila ordenada\n");
+      printf("4) Ordenar ordem alfabetica\n");
+      printf("5) Ordenar ordem numerica\n");
+      printf("6) Imprime fila ordenada\n");
+      printf("9) Sair\n");
       printf("Opcao: ");
       scanf("%d", &var->op);
 
@@ -258,9 +298,9 @@ void menu() {
          case 1: addContato(); break;
          case 2: deletar(); break;
          case 3: list(); break;
-         case 5: ordenar(1); break;
-         case 6: ordenar(2); break;
-         case 7: imprimeFila();
+         case 4: ordenar(1); break;
+         case 5: ordenar(2); break;
+         case 6: imprimeFila();
          default: break;
       }
    }
@@ -281,6 +321,6 @@ int main() {
 
    menu();
 
-   Clear();
+   CLEAR();
    free(pBuffer);
 }

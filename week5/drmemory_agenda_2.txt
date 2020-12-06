@@ -1,33 +1,12 @@
 Dr. Memory version 2.3.0 build 1 built on Feb  6 2020 01:44:52
-Dr. Memory results for pid 19182: "agenda_2"
+Dr. Memory results for pid 16081: "agenda_2"
 Recorded 17 suppression(s) from default /home/heifel/Documentos/AED/DrMemory-Linux-2.3.0-1/bin64/suppress-default.txt
 
-WARNING: application is missing line number information.
-
 Error #1: UNINITIALIZED READ: reading register eax
-# 0 menu    
-# 1 main    
-Note: @0:00:00.468 in thread 19182
-Note: instruction: cmp    %eax $0x00000004
-
-Error #2: UNADDRESSABLE ACCESS beyond heap bounds: reading 0x00007fce26feedf2-0x00007fce26feedf3 1 byte(s)
-# 0 replace_strcpy               [/drmemory_package/drmemory/replace.c:596]
-# 1 deletar 
-# 2 menu    
-# 3 main    
-Note: @0:01:18.573 in thread 19182
-Note: refers to 0 byte(s) beyond last valid byte in prior malloc
-Note: prev lower malloc:  0x00007fce26feeca0-0x00007fce26feedf2
-Note: instruction: movzx  (%r12) -> %eax
-
-Error #3: UNADDRESSABLE ACCESS beyond heap bounds: reading 0x00007fce26feee10-0x00007fce26feee11 1 byte(s)
-# 0 replace_strcpy               [/drmemory_package/drmemory/replace.c:596]
-# 1 deletar 
-# 2 menu    
-# 3 main    
-Note: @0:01:18.588 in thread 19182
-Note: prev lower malloc:  0x00007fce26feeca0-0x00007fce26feedf2
-Note: instruction: movzx  (%r12) -> %eax
+# 0 menu               [/home/heifel/Documentos/AED/AED-1/week5/agenda_2.c:300]
+# 1 main               [/home/heifel/Documentos/AED/AED-1/week5/agenda_2.c:337]
+Note: @0:00:01.146 in thread 16081
+Note: instruction: cmp    %eax $0x00000009
 
 ===========================================================================
 FINAL SUMMARY:
@@ -37,7 +16,7 @@ DUPLICATE ERROR COUNTS:
 SUPPRESSIONS USED:
 
 ERRORS FOUND:
-      2 unique,     2 total unaddressable access(es)
+      0 unique,     0 total unaddressable access(es)
       1 unique,     1 total uninitialized access(es)
       0 unique,     0 total invalid heap argument(s)
       0 unique,     0 total warning(s)
@@ -46,4 +25,4 @@ ERRORS FOUND:
 ERRORS IGNORED:
      15 unique,    18 total,   8754 byte(s) of still-reachable allocation(s)
          (re-run with "-show_reachable" for details)
-Details: /home/heifel/Documentos/AED/DrMemory-Linux-2.3.0-1/drmemory/logs/DrMemory-agenda_2.19182.000/results.txt
+Details: /home/heifel/Documentos/AED/DrMemory-Linux-2.3.0-1/drmemory/logs/DrMemory-agenda_2.16081.000/results.txt
